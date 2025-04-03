@@ -67,13 +67,13 @@ const FileUpload: React.FC<FileUploadProps> = ({ onResumeData }) => {
   }, []);
   
   return (
-    <UploadContainer>
-      <DropZone
+    <div className="upload-container">
+      <div 
+        className={`dropzone ${isDragging ? 'dragging' : ''}`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        isDragging={isDragging}
       >
         <input
           type="file"
@@ -82,26 +82,26 @@ const FileUpload: React.FC<FileUploadProps> = ({ onResumeData }) => {
           accept=".pdf"
           style={{ display: 'none' }}
         />
-        <UploadIcon>📄</UploadIcon>
-        <UploadText>
+        <div className="upload-icon">📄</div>
+        <div className="upload-text">
           {fileName ? (
-            <FileName>{fileName}</FileName>
+            <span className="file-name">{fileName}</span>
           ) : (
             <>
-              <MainText>Arrastra y suelta tu currículum (PDF) aquí, o</MainText>
-              <BrowseButton onClick={handleButtonClick}>
+              <p>Arrastra y suelta tu currículum (PDF) aquí, o</p>
+              <button className="upload-button" onClick={handleButtonClick}>
                 Subir archivos
-              </BrowseButton>
+              </button>
             </>
           )}
-        </UploadText>
+        </div>
         {fileName && (
-          <ResetButton onClick={handleResetFile}>
+          <button className="reset-button" onClick={handleResetFile}>
             Subir otro archivo
-          </ResetButton>
+          </button>
         )}
-      </DropZone>
-    </UploadContainer>
+      </div>
+    </div>
   );
 };
 
