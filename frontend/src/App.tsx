@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import FileUpload from './components/FileUpload';
 import ResumeDisplay from './components/ResumeDisplay';
 import ResumeChecklist from './components/ResumeChecklist';
 import useResumeUpload from './hooks/useResumeUpload';
-import { ResumeData } from './types';
 import './App.css';
 
 const App: React.FC = () => {

@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
-import { ResumeData, APIResponse, ContactInfo } from '../types';
+import { ResumeData, APIResponse } from '../types';
+
+// Use environment variable with fallback to localhost
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 interface UseResumeUploadReturn {
   uploadResume: (file: File) => Promise<void>;
@@ -34,9 +37,10 @@ const useResumeUpload = (): UseResumeUploadReturn => {
     setError(null);
     
     try {
-      console.log('Realizando solicitud API a http://localhost:5000/api/parse-resume');
+      const apiEndpoint = `${API_URL}/api/parse-resume`;
+      console.log(`Realizando solicitud API a ${apiEndpoint}`);
       
-      const response = await axios.post<APIResponse>('http://localhost:5000/api/parse-resume', formData, {
+      const response = await axios.post<APIResponse>(apiEndpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
