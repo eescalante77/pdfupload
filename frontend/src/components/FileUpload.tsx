@@ -90,7 +90,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onResumeData }) => {
             <>
               <MainText>Arrastra y suelta tu currículum (PDF) aquí, o</MainText>
               <BrowseButton onClick={handleButtonClick}>
-                Buscar archivos
+                Subir archivos
               </BrowseButton>
             </>
           )}
