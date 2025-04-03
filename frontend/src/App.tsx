@@ -1,95 +1,83 @@
-import React from 'react';
-import { FileUpload, ResumeDisplay, ResumeChecklist } from './components';
+import React, { useState } from 'react';
+import { 
+  FileUpload, 
+  ResumeDisplay, 
+  ResumeChecklist, 
+  Navigation, 
+  InvoiceUpload,
+  InvoiceDisplay 
+} from './components';
 import useResumeUpload from './hooks/useResumeUpload';
+import useInvoiceUpload from './hooks/useInvoiceUpload';
 import './App.css';
 
+interface ResumeData {
+  name: string;
+  email: string;
+  phone: string;
+  skills: string[];
+}
+
 const App: React.FC = () => {
-  const { uploadResume, resumeData, isLoading, error, errorType } = useResumeUpload();
+  const [activeTab, setActiveTab] = useState<string>('resume');
+  const { 
+    handleFileUpload: handleResumeUpload, 
+    isLoading: isResumeLoading, 
+    error: resumeError, 
+    errorType: resumeErrorType, 
+    resumeData 
+  } = useResumeUpload();
 
-  const handleFileUpload = async (file: File) => {
-    await uploadResume(file);
-  };
-
-  const renderErrorIcon = () => {
-    switch (errorType) {
-      case 'not-pdf':
-        return '📄❌';
-      case 'not-resume':
-        return '📝❌';
-      case 'server':
-        return '🖥️❌';
-      default:
-        return '⚠️';
-    }
-  };
-
-  const renderErrorTitle = () => {
-    switch (errorType) {
-      case 'not-pdf':
-        return 'Formato de Archivo Incorrecto';
-      case 'not-resume':
-        return 'No Es Un Currículum';
-      case 'server':
-        return 'Error de Conexión';
-      default:
-        return 'Atención';
-    }
-  };
-
-  const renderErrorHelp = () => {
-    switch (errorType) {
-      case 'not-pdf':
-        return 'Este analizador solo puede procesar archivos PDF. Por favor, convierte tu documento a formato PDF e inténtalo de nuevo.';
-      case 'not-resume':
-        return 'Asegúrate de que el documento contiene información típica de un currículum como experiencia laboral, educación y habilidades. Algunos documentos PDF no son reconocidos como currículums por nuestro sistema.';
-      case 'server':
-        return 'Parece que hay un problema de conexión con nuestro servidor. Por favor, verifica tu conexión a internet e intenta nuevamente.';
-      default:
-        return 'Si el problema persiste, prueba con otro documento o vuelve más tarde.';
-    }
-  };
+  const {
+    handleFileUpload: handleInvoiceUpload,
+    isLoading: isInvoiceLoading,
+    error: invoiceError,
+    errorType: invoiceErrorType,
+    invoiceData
+  } = useInvoiceUpload();
 
   return (
-    <div className="app-container">
-      <header>
-        <h1>Analizador de Currículum</h1>
-        <p>Sube tu currículum para extraer información clave</p>
-      </header>
+    <div className="App">
+      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       
-      <main>
-        <FileUpload 
-          onResumeData={handleFileUpload}
-          onError={() => {}} // Errors are handled by the hook now
-          setIsLoading={() => {}} // Loading state is handled by the hook now
-        />
-        
-        {isLoading && (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>Analizando tu currículum...</p>
-          </div>
-        )}
-        
-        {error && (
-          <div className={`error-container error-${errorType}`}>
-            <div className="error-icon">{renderErrorIcon()}</div>
-            <h3>{renderErrorTitle()}</h3>
-            <p>{error}</p>
-            <p className="error-help">{renderErrorHelp()}</p>
-          </div>
-        )}
-        
-        {resumeData && (
-          <>
-            <ResumeChecklist resumeData={resumeData} />
-            <ResumeDisplay resumeData={resumeData} />
-          </>
-        )}
-      </main>
-      
-      <footer>
-        <p>© 2025 Aplicación de Análisis de Currículum</p>
-      </footer>
+      {activeTab === 'resume' ? (
+        <>
+          <h1>Analizador de Currículum</h1>
+          <FileUpload
+            onResumeData={handleResumeUpload}
+            onError={() => {}}
+            setIsLoading={() => {}}
+          />
+          {resumeError && (
+            <div className={`error-container error-${resumeErrorType}`}>
+              {resumeError}
+            </div>
+          )}
+          {isResumeLoading && <div className="loading">Analizando el documento...</div>}
+          {resumeData && (
+            <>
+              <ResumeDisplay resumeData={resumeData} />
+              <ResumeChecklist resumeData={resumeData} />
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          <h1>Analizador de Facturas</h1>
+          <InvoiceUpload
+            onInvoiceData={handleInvoiceUpload}
+            onError={() => {}}
+            setIsLoading={() => {}}
+          />
+          {invoiceError && (
+            <div className={`error-container error-${invoiceErrorType}`}>
+              {invoiceError}
+            </div>
+          )}
+          {isInvoiceLoading && <div className="loading">Analizando la factura...</div>}
+          {invoiceData && <InvoiceDisplay invoiceData={invoiceData} />}
+        </>
+      )}
     </div>
   );
 };
