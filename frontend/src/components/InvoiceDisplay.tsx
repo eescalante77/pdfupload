@@ -1,18 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
-interface InvoiceData {
-  invoiceNumber: string;
-  date: string;
-  total: number;
-  vendor: string;
-  items: {
-    description: string;
-    quantity: number;
-    price: number;
-    total: number;
-  }[];
-}
+import { InvoiceData } from '../hooks/useInvoiceUpload';
 
 interface InvoiceDisplayProps {
   invoiceData: InvoiceData;

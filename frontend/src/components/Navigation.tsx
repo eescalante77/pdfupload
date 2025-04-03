@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface NavigationProps {
+export interface NavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
 }

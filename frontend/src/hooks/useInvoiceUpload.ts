@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-interface InvoiceData {
+export interface InvoiceData {
   invoiceNumber: string;
   date: string;
   total: number;
@@ -13,7 +13,15 @@ interface InvoiceData {
   }[];
 }
 
-const useInvoiceUpload = () => {
+export interface UseInvoiceUploadReturn {
+  handleFileUpload: (file: File) => Promise<void>;
+  isLoading: boolean;
+  error: string | null;
+  errorType: 'not-pdf' | 'not-invoice' | 'server' | 'generic' | null;
+  invoiceData: InvoiceData | null;
+}
+
+const useInvoiceUpload = (): UseInvoiceUploadReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<'not-pdf' | 'not-invoice' | 'server' | 'generic' | null>(null);
