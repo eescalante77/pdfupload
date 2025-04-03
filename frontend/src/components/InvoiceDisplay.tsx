@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { InvoiceData } from '../hooks/useInvoiceUpload';
 
-interface InvoiceDisplayProps {
+export interface InvoiceDisplayProps {
   invoiceData: InvoiceData;
 }
 
@@ -131,4 +131,7 @@ const TableCell = styled.td<{ align?: 'right' | 'left' | 'center' }>`
   color: #495057;
 `;
 
-export default InvoiceDisplay; 
+export default InvoiceDisplay;
+
+// Add empty export to make it a module
+export {}; 

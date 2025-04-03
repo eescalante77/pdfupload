@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ContactInfo, ResumeData } from '../types';
+import { ResumeData } from '../types';
 
 const useResumeUpload = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,4 +48,7 @@ const useResumeUpload = () => {
   };
 };
 
-export default useResumeUpload; 
+export default useResumeUpload;
+
+// Add empty export to make this a module
+export {}; 

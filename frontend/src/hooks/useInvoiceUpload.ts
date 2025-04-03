@@ -68,4 +68,7 @@ const useInvoiceUpload = (): UseInvoiceUploadReturn => {
   };
 };
 
-export default useInvoiceUpload; 
+export default useInvoiceUpload;
+
+// Add empty export to make this a module
+export {}; 

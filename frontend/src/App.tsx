@@ -11,13 +11,6 @@ import useResumeUpload from './hooks/useResumeUpload';
 import useInvoiceUpload from './hooks/useInvoiceUpload';
 import './App.css';
 
-interface ResumeData {
-  name: string;
-  email: string;
-  phone: string;
-  skills: string[];
-}
-
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('resume');
   const { 
@@ -40,44 +33,54 @@ const App: React.FC = () => {
     <div className="App">
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       
-      {activeTab === 'resume' ? (
-        <>
-          <h1>Analizador de Currículum</h1>
-          <FileUpload
-            onResumeData={handleResumeUpload}
-            onError={() => {}}
-            setIsLoading={() => {}}
-          />
-          {resumeError && (
-            <div className={`error-container error-${resumeErrorType}`}>
-              {resumeError}
+      <div className="content-container">
+        {activeTab === 'resume' ? (
+          <>
+            <h1>Analizador de Currículum</h1>
+            <div className="upload-container">
+              <FileUpload
+                onResumeData={handleResumeUpload}
+                onError={() => {}}
+                setIsLoading={() => {}}
+              />
+              {resumeError && (
+                <div className={`error-container error-${resumeErrorType}`}>
+                  {resumeError}
+                </div>
+              )}
+              {isResumeLoading && <div className="loading">Analizando el documento...</div>}
             </div>
-          )}
-          {isResumeLoading && <div className="loading">Analizando el documento...</div>}
-          {resumeData && (
-            <>
-              <ResumeDisplay resumeData={resumeData} />
-              <ResumeChecklist resumeData={resumeData} />
-            </>
-          )}
-        </>
-      ) : (
-        <>
-          <h1>Analizador de Facturas</h1>
-          <InvoiceUpload
-            onInvoiceData={handleInvoiceUpload}
-            onError={() => {}}
-            setIsLoading={() => {}}
-          />
-          {invoiceError && (
-            <div className={`error-container error-${invoiceErrorType}`}>
-              {invoiceError}
+            {resumeData && (
+              <div className="resume-display">
+                <ResumeDisplay resumeData={resumeData} />
+                <ResumeChecklist resumeData={resumeData} />
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <h1>Analizador de Facturas</h1>
+            <div className="upload-container">
+              <InvoiceUpload
+                onInvoiceData={handleInvoiceUpload}
+                onError={() => {}}
+                setIsLoading={() => {}}
+              />
+              {invoiceError && (
+                <div className={`error-container error-${invoiceErrorType}`}>
+                  {invoiceError}
+                </div>
+              )}
+              {isInvoiceLoading && <div className="loading">Analizando la factura...</div>}
             </div>
-          )}
-          {isInvoiceLoading && <div className="loading">Analizando la factura...</div>}
-          {invoiceData && <InvoiceDisplay invoiceData={invoiceData} />}
-        </>
-      )}
+            {invoiceData && (
+              <div className="invoice-display">
+                <InvoiceDisplay invoiceData={invoiceData} />
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
