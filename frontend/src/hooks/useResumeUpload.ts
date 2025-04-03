@@ -10,23 +10,32 @@ interface UseResumeUploadReturn {
   resumeData: ResumeData | null;
   isLoading: boolean;
   error: string | null;
+  errorType: 'none' | 'not-pdf' | 'not-resume' | 'server' | 'generic';
 }
 
 const useResumeUpload = (): UseResumeUploadReturn => {
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorType, setErrorType] = useState<'none' | 'not-pdf' | 'not-resume' | 'server' | 'generic'>('none');
 
   const uploadResume = useCallback(async (file: File) => {
     if (!file) {
       setError('Por favor selecciona un archivo para subir.');
+      setErrorType('generic');
       return;
     }
 
     console.log('Tipo de archivo:', file.type);
     
+    // Clear previous errors
+    setError(null);
+    setErrorType('none');
+    
+    // Check if file is a PDF
     if (file.type !== 'application/pdf') {
-      setError(`El archivo debe estar en formato PDF. Por favor sube un archivo PDF válido.`);
+      setError(`FORMATO INCORRECTO: El archivo "${file.name}" no es un PDF. Por favor, sube únicamente archivos PDF.`);
+      setErrorType('not-pdf');
       return;
     }
 
@@ -34,7 +43,6 @@ const useResumeUpload = (): UseResumeUploadReturn => {
     formData.append('resume', file);
 
     setIsLoading(true);
-    setError(null);
     
     try {
       const apiEndpoint = `${API_URL}/api/parse-resume`;
@@ -53,9 +61,11 @@ const useResumeUpload = (): UseResumeUploadReturn => {
       } else {
         // Handle specific API error message about non-resume documents
         if (response.data.message && response.data.message.includes('no parece ser un currículum')) {
-          setError('El documento subido no parece ser un currículum. Por favor sube un currículum válido.');
+          setError(`DOCUMENTO NO VÁLIDO: El archivo "${file.name}" no parece ser un currículum. Por favor, sube un documento que contenga la información típica de un currículum.`);
+          setErrorType('not-resume');
         } else {
           setError(response.data.message || 'No se pudo analizar el documento.');
+          setErrorType('generic');
         }
       }
     } catch (error: any) {
@@ -65,20 +75,29 @@ const useResumeUpload = (): UseResumeUploadReturn => {
         // The request was made and the server responded with a status code outside 2xx range
         console.error('Error de respuesta del servidor:', error.response.data);
         
-        // Check for specific error messages about document format
-        if (error.response.data.message && error.response.data.message.includes('no parece ser un currículum')) {
-          setError('El documento subido no parece ser un currículum. Por favor sube un currículum válido.');
+        // Check for specific error messages
+        const errorMessage = error.response.data.message || '';
+        
+        if (errorMessage.includes('PDF') || errorMessage.includes('formato PDF')) {
+          setError(`FORMATO INCORRECTO: El archivo "${file.name}" no es un PDF válido. Por favor, sube únicamente archivos PDF correctamente formateados.`);
+          setErrorType('not-pdf');
+        } else if (errorMessage.includes('no parece ser un currículum')) {
+          setError(`DOCUMENTO NO VÁLIDO: El archivo "${file.name}" no contiene la estructura de un currículum. Asegúrate de que el documento incluya secciones como experiencia laboral, educación y habilidades.`);
+          setErrorType('not-resume');
         } else {
           setError('Hubo un problema al procesar tu documento. Asegúrate de que es un currículum en formato PDF válido.');
+          setErrorType('generic');
         }
       } else if (error.request) {
         // The request was made but no response was received
         console.error('No se recibió respuesta:', error.request);
         setError('No se pudo conectar con el servidor. Por favor intenta de nuevo más tarde.');
+        setErrorType('server');
       } else {
         // Something happened in setting up the request
         console.error('Error en la configuración de la solicitud:', error.message);
         setError('Ocurrió un error al subir el archivo. Por favor intenta de nuevo.');
+        setErrorType('generic');
       }
     } finally {
       setIsLoading(false);
@@ -89,7 +108,8 @@ const useResumeUpload = (): UseResumeUploadReturn => {
     uploadResume,
     resumeData,
     isLoading,
-    error
+    error,
+    errorType
   };
 };
 
