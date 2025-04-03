@@ -36,16 +36,51 @@ const storage = multer.diskStorage({
   }
 });
 
+const fileFilter = (req, file, cb) => {
+  // Check if file is a PDF
+  if (file.mimetype !== 'application/pdf') {
+    return cb(new Error('El archivo debe estar en formato PDF. Por favor sube un archivo PDF válido.'), false);
+  }
+  cb(null, true);
+};
+
 const upload = multer({
   storage,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max file size
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype !== 'application/pdf') {
-      return cb(new Error('Only PDF files are allowed'));
-    }
-    cb(null, true);
-  }
+  fileFilter
 });
+
+// Error handler for multer file uploads
+const uploadHandler = (req, res, next) => {
+  const multerUpload = upload.single('resume');
+  
+  multerUpload(req, res, (err) => {
+    if (err) {
+      // Handle different types of upload errors
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'El archivo es demasiado grande. El tamaño máximo permitido es 10MB.' 
+        });
+      }
+      
+      return res.status(400).json({ 
+        success: false, 
+        message: err.message || 'Error al subir el archivo.' 
+      });
+    }
+    
+    // No file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'No se seleccionó ningún archivo para subir.' 
+      });
+    }
+    
+    next();
+  });
+};
 
 // Helper function to extract text from PDF
 async function extractTextFromPDF(filePath) {
@@ -137,14 +172,8 @@ async function extractResumeInfo(text) {
 }
 
 // Route to handle resume uploads and parsing
-app.post('/api/parse-resume', upload.single('resume'), async (req, res) => {
+app.post('/api/parse-resume', uploadHandler, async (req, res) => {
   try {
-    // Check if file was uploaded
-    if (!req.file) {
-      console.log('No file uploaded');
-      return res.status(400).json({ success: false, message: 'No se subió ningún archivo' });
-    }
-
     console.log('File uploaded successfully:', req.file.originalname);
     console.log('File path:', req.file.path);
     console.log('File size:', req.file.size);
@@ -163,7 +192,7 @@ app.post('/api/parse-resume', upload.single('resume'), async (req, res) => {
       fs.unlinkSync(filePath);
       return res.status(400).json({ 
         success: false, 
-        message: 'El documento subido no parece ser un currículum. Por favor, sube un currículum válido.' 
+        message: 'El documento subido no parece ser un currículum. Por favor sube un currículum válido que incluya tu experiencia, educación y habilidades.' 
       });
     }
 
@@ -188,9 +217,16 @@ app.post('/api/parse-resume', upload.single('resume'), async (req, res) => {
       fs.unlinkSync(req.file.path);
     }
     
+    if (error.message.includes('PDF')) {
+      return res.status(400).json({
+        success: false,
+        message: 'Hubo un problema al leer el archivo PDF. Asegúrate de que es un PDF válido y no está dañado.'
+      });
+    }
+    
     res.status(500).json({
       success: false,
-      message: error.message || 'Error al procesar el currículum'
+      message: 'Ocurrió un problema al procesar tu currículum. Por favor intenta de nuevo.'
     });
   }
 });

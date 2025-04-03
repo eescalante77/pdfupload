@@ -1,27 +1,62 @@
 // Mock resume parser API for Netlify Functions
 exports.handler = async function(event, context) {
+  // Add CORS headers for browser security
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Content-Type": "application/json"
+  };
+
+  // Handle preflight OPTIONS request
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers
+    };
+  }
+
   // Only allow POST requests
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      body: JSON.stringify({ success: false, message: "Método no permitido" })
+      headers,
+      body: JSON.stringify({ 
+        success: false, 
+        message: "Método no permitido" 
+      })
     };
   }
 
   try {
-    // For a real implementation, you would:
-    // 1. Parse the multipart/form-data to get the PDF file
-    // 2. Extract text from the PDF
-    // 3. Use OpenAI API to analyze the text
-    // 4. Return structured data
-    
-    // For this mock implementation, we'll just return a sample response
+    // Basic content-type validation (in a real implementation we'd parse the multipart form)
+    const contentType = event.headers['content-type'] || '';
+    if (!contentType.includes('multipart/form-data')) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          success: false, 
+          message: "El archivo debe estar en formato PDF. Por favor sube un archivo PDF válido." 
+        })
+      };
+    }
+
+    // Simulate a 10% chance of detecting a non-resume document
+    if (Math.random() < 0.1) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          success: false, 
+          message: "El documento subido no parece ser un currículum. Por favor sube un currículum válido que incluya tu experiencia, educación y habilidades." 
+        })
+      };
+    }
+
+    // For the successful case, return sample data
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      },
+      headers,
       body: JSON.stringify({
         success: true,
         message: "Currículum analizado con éxito (demostración)",
@@ -55,11 +90,14 @@ exports.handler = async function(event, context) {
       })
     };
   } catch (error) {
+    console.error('Error:', error);
+    
     return {
       statusCode: 500,
+      headers,
       body: JSON.stringify({ 
         success: false, 
-        message: "Error al procesar el currículum: " + error.message 
+        message: "Ocurrió un problema al procesar tu currículum. Por favor intenta de nuevo." 
       })
     };
   }

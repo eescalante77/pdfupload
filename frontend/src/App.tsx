@@ -35,7 +35,16 @@ const App: React.FC = () => {
         
         {error && (
           <div className="error-container">
+            <div className="error-icon">⚠️</div>
+            <h3>Atención</h3>
             <p>{error}</p>
+            <p className="error-help">
+              {error.includes('no parece ser un currículum') 
+                ? 'Asegúrate de que el documento contiene información típica de un currículum como experiencia laboral, educación y habilidades.' 
+                : error.includes('formato PDF') 
+                  ? 'Solo aceptamos archivos PDF. Por favor, convierte tu documento a PDF e inténtalo de nuevo.' 
+                  : 'Si el problema persiste, prueba con otro documento o vuelve más tarde.'}
+            </p>
           </div>
         )}
         

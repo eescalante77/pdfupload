@@ -19,14 +19,14 @@ const useResumeUpload = (): UseResumeUploadReturn => {
 
   const uploadResume = useCallback(async (file: File) => {
     if (!file) {
-      setError('No se seleccionó ningún archivo');
+      setError('Por favor selecciona un archivo para subir.');
       return;
     }
 
     console.log('Tipo de archivo:', file.type);
     
     if (file.type !== 'application/pdf') {
-      setError(`Por favor, sube un archivo PDF. Tipo de archivo recibido: ${file.type}`);
+      setError(`El archivo debe estar en formato PDF. Por favor sube un archivo PDF válido.`);
       return;
     }
 
@@ -51,25 +51,34 @@ const useResumeUpload = (): UseResumeUploadReturn => {
       if (response.data.success && response.data.resumeData) {
         setResumeData(response.data.resumeData);
       } else {
-        setError(response.data.message || 'No se pudo analizar el currículum');
+        // Handle specific API error message about non-resume documents
+        if (response.data.message && response.data.message.includes('no parece ser un currículum')) {
+          setError('El documento subido no parece ser un currículum. Por favor sube un currículum válido.');
+        } else {
+          setError(response.data.message || 'No se pudo analizar el documento.');
+        }
       }
     } catch (error: any) {
       console.error('Detalles del error:', error);
       
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
+        // The request was made and the server responded with a status code outside 2xx range
         console.error('Error de respuesta del servidor:', error.response.data);
-        console.error('Código de estado:', error.response.status);
-        setError(`Error del servidor (${error.response.status}): ${error.response.data.message || JSON.stringify(error.response.data)}`);
+        
+        // Check for specific error messages about document format
+        if (error.response.data.message && error.response.data.message.includes('no parece ser un currículum')) {
+          setError('El documento subido no parece ser un currículum. Por favor sube un currículum válido.');
+        } else {
+          setError('Hubo un problema al procesar tu documento. Asegúrate de que es un currículum en formato PDF válido.');
+        }
       } else if (error.request) {
         // The request was made but no response was received
         console.error('No se recibió respuesta:', error.request);
-        setError('No se recibió respuesta del servidor. Por favor, verifica que el servidor backend esté funcionando.');
+        setError('No se pudo conectar con el servidor. Por favor intenta de nuevo más tarde.');
       } else {
-        // Something happened in setting up the request that triggered an Error
+        // Something happened in setting up the request
         console.error('Error en la configuración de la solicitud:', error.message);
-        setError(`Error: ${error.message}`);
+        setError('Ocurrió un error al subir el archivo. Por favor intenta de nuevo.');
       }
     } finally {
       setIsLoading(false);
