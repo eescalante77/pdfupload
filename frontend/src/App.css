@@ -13,6 +13,8 @@
   --spacing-sm: 10px;
   --spacing-md: 20px;
   --spacing-lg: 30px;
+  --upload-box-width: 500px;
+  --upload-box-height: 200px;
 }
 
 /* Base styles */
@@ -25,47 +27,44 @@
   flex-direction: column;
   align-items: center;
   color: var(--text-primary);
+  background-color: var(--background-light);
+  min-height: 100vh;
 }
 
 .content-container {
   width: 100%;
+  max-width: var(--upload-box-width);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-lg);
 }
 
 /* Typography */
 h1 {
   color: var(--text-primary);
-  margin-bottom: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
   text-align: center;
   width: 100%;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 600;
 }
 
-/* Card-like containers */
-.upload-container, .resume-display, .invoice-display, .checklist {
+/* Upload container styles */
+.upload-container {
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: var(--spacing-md);
-  background: white;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;
 }
 
-/* Dropzone styles - consistent across all upload areas */
+/* Dropzone styles - consistent for both sections */
 .dropzone {
   width: 100%;
-  max-width: 500px;
-  min-height: 200px;
-  margin: 0 auto;
+  height: var(--upload-box-height);
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,21 +72,38 @@ h1 {
   border: 2px dashed var(--border-color);
   border-radius: var(--border-radius);
   background-color: white;
-  padding: 40px var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-md);
   transition: all 0.3s ease;
   box-sizing: border-box;
-  box-shadow: var(--shadow-sm);
   gap: var(--spacing-md);
 }
 
 .dropzone:hover, .dropzone.dragging {
   border-color: var(--primary-color);
   background-color: rgba(74, 144, 226, 0.05);
-  box-shadow: var(--shadow-md);
 }
 
-/* Button styles - consistent across all actions */
-.upload-button, .action-button {
+/* Upload icon styles */
+.upload-icon {
+  font-size: 48px;
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Upload text styles */
+.upload-text {
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+  font-size: 16px;
+}
+
+.upload-text p {
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+/* Button styles */
+.upload-button {
   background-color: var(--primary-color);
   color: white;
   padding: 12px 24px;
@@ -96,108 +112,60 @@ h1 {
   font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(74, 144, 226, 0.2);
+  margin: 0;
 }
 
-.upload-button:hover, .action-button:hover {
+.upload-button:hover {
   background-color: var(--primary-hover);
-  box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
   transform: translateY(-1px);
 }
 
-.reset-button, .secondary-button {
+/* File name display */
+.file-name {
+  color: var(--primary-color);
+  font-weight: 500;
+  margin: var(--spacing-sm) 0;
+}
+
+/* Reset button styles */
+.reset-button {
   background-color: transparent;
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
   padding: 8px 16px;
   border-radius: 4px;
+  margin-top: var(--spacing-md);
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 14px;
 }
 
-.reset-button:hover, .secondary-button:hover {
+.reset-button:hover {
   background-color: var(--background-light);
   border-color: var(--text-secondary);
   color: var(--text-primary);
 }
 
-/* Icons and visual elements */
-.upload-icon {
-  font-size: 48px;
-  color: var(--primary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: var(--spacing-sm);
-}
-
-/* Text elements */
-.upload-text {
-  color: var(--text-secondary);
-  text-align: center;
+/* Display components styles */
+.resume-display, .invoice-display {
   width: 100%;
-  font-size: 16px;
-}
-
-.upload-text p {
-  margin: 0 0 var(--spacing-sm) 0;
-}
-
-.file-name {
-  color: var(--primary-color);
-  font-weight: 500;
-  font-size: 16px;
-}
-
-/* Table styles */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: var(--spacing-md) 0;
-}
-
-th, td {
-  text-align: left;
-  padding: 12px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-th {
-  background-color: var(--background-light);
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-/* Navigation styles */
-.nav-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: var(--spacing-lg);
-  gap: var(--spacing-sm);
-}
-
-/* Loading states */
-.loading {
-  color: var(--primary-color);
-  text-align: center;
-  margin: var(--spacing-md) 0;
-  font-size: 16px;
-  width: 100%;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Error states */
 .error-container {
-  max-width: 600px;
-  margin: var(--spacing-md) auto;
+  width: 100%;
+  margin: var(--spacing-md) 0;
   padding: var(--spacing-md);
   border-radius: var(--border-radius);
   text-align: center;
-  width: 100%;
-  border-left-width: 5px;
+  border-left-width: 4px;
   border-left-style: solid;
+  background-color: white;
 }
 
 .error-not-pdf {
@@ -224,19 +192,35 @@ th {
   color: var(--text-primary);
 }
 
+/* Loading state */
+.loading {
+  color: var(--primary-color);
+  margin: var(--spacing-md) 0;
+  text-align: center;
+  width: 100%;
+}
+
+/* Navigation styles */
+.nav-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-sm);
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
-  .upload-container, .resume-display, .invoice-display, .checklist {
-    padding: var(--spacing-sm);
+  .content-container {
+    padding: 0 var(--spacing-sm);
   }
-
-  h1 {
-    font-size: 2rem;
-  }
-
+  
   .dropzone {
-    min-height: 180px;
-    padding: var(--spacing-md) var(--spacing-sm);
+    padding: var(--spacing-md);
+  }
+  
+  h1 {
+    font-size: 1.75rem;
   }
 }
 
