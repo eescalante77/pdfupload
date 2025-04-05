@@ -1,11 +1,30 @@
+/* Global styles and variables */
+:root {
+  --primary-color: #4a90e2;
+  --primary-hover: #357abd;
+  --text-primary: #2c3e50;
+  --text-secondary: #666;
+  --text-light: #7f8c8d;
+  --border-color: #ccc;
+  --background-light: #f8f9fa;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+  --spacing-sm: 10px;
+  --spacing-md: 20px;
+  --spacing-lg: 30px;
+}
+
+/* Base styles */
 .App {
   text-align: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: var(--text-primary);
 }
 
 .content-container {
@@ -13,27 +32,35 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: var(--spacing-lg);
 }
 
+/* Typography */
 h1 {
-  color: #333;
-  margin-bottom: 30px;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
   text-align: center;
   width: 100%;
+  font-size: 2.5rem;
+  font-weight: 600;
 }
 
-/* Upload container styles */
-.upload-container {
+/* Card-like containers */
+.upload-container, .resume-display, .invoice-display, .checklist {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
+  padding: var(--spacing-md);
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  box-sizing: border-box;
 }
 
-/* Dropzone styles - consistent for both resume and invoice */
+/* Dropzone styles - consistent across all upload areas */
 .dropzone {
   width: 100%;
   max-width: 500px;
@@ -43,157 +70,104 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  background-color: #fafafa;
-  padding: 40px 20px;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: white;
+  padding: 40px var(--spacing-md);
   transition: all 0.3s ease;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-sm);
+  gap: var(--spacing-md);
 }
 
 .dropzone:hover, .dropzone.dragging {
-  border-color: #4a90e2;
-  background-color: rgba(74, 144, 226, 0.1);
+  border-color: var(--primary-color);
+  background-color: rgba(74, 144, 226, 0.05);
+  box-shadow: var(--shadow-md);
 }
 
-.loading {
-  text-align: center;
-  color: #4a90e2;
-  margin: 20px 0;
-  font-size: 16px;
-  width: 100%;
-}
-
-.error-container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 15px 20px;
-  border-radius: 8px;
-  text-align: center;
-  width: 100%;
-}
-
-.error-not-pdf {
-  background-color: #fff3cd;
-  border: 1px solid #ffeeba;
-  color: #856404;
-}
-
-.error-not-resume, .error-not-invoice {
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  color: #721c24;
-}
-
-.error-server {
-  background-color: #cce5ff;
-  border: 1px solid #b8daff;
-  color: #004085;
-}
-
-.error-generic {
-  background-color: #e2e3e5;
-  border: 1px solid #d6d8db;
-  color: #383d41;
-}
-
-/* Display components styles */
-.resume-display, .invoice-display {
-  width: 100%;
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Table styles */
-table {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  border-collapse: collapse;
-}
-
-th, td {
-  text-align: left;
-  padding: 12px;
-}
-
-th[align="right"], td[align="right"] {
-  text-align: right;
-}
-
-/* Upload button styles - consistent for both sections */
-.upload-button {
-  background-color: #4a90e2;
+/* Button styles - consistent across all actions */
+.upload-button, .action-button {
+  background-color: var(--primary-color);
   color: white;
   padding: 12px 24px;
   border: none;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 15px;
-}
-
-.upload-button:hover {
-  background-color: #357abd;
-}
-
-/* File name display */
-.file-name {
-  color: #4a90e2;
+  transition: all 0.3s ease;
   font-weight: 500;
-  margin: 10px 0;
+  box-shadow: 0 2px 4px rgba(74, 144, 226, 0.2);
 }
 
-/* Reset button styles */
-.reset-button {
+.upload-button:hover, .action-button:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
+  transform: translateY(-1px);
+}
+
+.reset-button, .secondary-button {
   background-color: transparent;
-  color: #666;
-  border: 1px solid #ccc;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
   padding: 8px 16px;
   border-radius: 4px;
-  margin-top: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 14px;
 }
 
-.reset-button:hover {
-  background-color: #f0f0f0;
-  border-color: #999;
+.reset-button:hover, .secondary-button:hover {
+  background-color: var(--background-light);
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
-/* Upload icon styles */
+/* Icons and visual elements */
 .upload-icon {
   font-size: 48px;
-  margin-bottom: 15px;
-  color: #4a90e2;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-sm);
 }
 
-/* Upload text styles */
+/* Text elements */
 .upload-text {
-  color: #666;
-  margin: 10px 0;
+  color: var(--text-secondary);
+  text-align: center;
+  width: 100%;
   font-size: 16px;
 }
 
-/* Center align checklist */
-.checklist {
+.upload-text p {
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.file-name {
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* Table styles */
+table {
   width: 100%;
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  border-collapse: collapse;
+  margin: var(--spacing-md) 0;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  background-color: var(--background-light);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 /* Navigation styles */
@@ -201,30 +175,69 @@ th[align="right"], td[align="right"] {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-lg);
+  gap: var(--spacing-sm);
 }
 
-/* Loading spinner */
-.loading-container {
+/* Loading states */
+.loading {
+  color: var(--primary-color);
+  text-align: center;
+  margin: var(--spacing-md) 0;
+  font-size: 16px;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0;
 }
 
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* Error states */
+.error-container {
+  max-width: 600px;
+  margin: var(--spacing-md) auto;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  text-align: center;
+  width: 100%;
+  border-left-width: 5px;
+  border-left-style: solid;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.error-not-pdf {
+  background-color: #fff8e6;
+  border-color: #f39c12;
+  color: #8e5b00;
+}
+
+.error-not-resume, .error-not-invoice {
+  background-color: #fef0f0;
+  border-color: #e74c3c;
+  color: #c0392b;
+}
+
+.error-server {
+  background-color: #eef6ff;
+  border-color: var(--primary-color);
+  color: var(--primary-hover);
+}
+
+.error-generic {
+  background-color: var(--background-light);
+  border-color: var(--text-light);
+  color: var(--text-primary);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .upload-container, .resume-display, .invoice-display, .checklist {
+    padding: var(--spacing-sm);
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .dropzone {
+    min-height: 180px;
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
 }
 
 /* Base error container styles */
